@@ -1,3 +1,11 @@
 potato/
 utils/output
 venv/
+*.pt
+__pycache__
+
+data/
+
+baseline/preds/
+baseline/run/
+baseline/weights/
