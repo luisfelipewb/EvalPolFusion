@@ -26,7 +26,7 @@ class BottleSeg(Dataset):
 
         transformed = self.aug(image=img, mask=msk)
         img = transformed["image"].astype("float32") / 255.0
-        img = torch.from_numpy(img).permute(2, 0, 1)          # C,H,W
+        img = torch.from_numpy(img).permute(2, 0, 1) # C,H,W
         msk = torch.from_numpy(transformed["mask"]).unsqueeze(0)  # 1,H,W
         return img, msk, name
 
