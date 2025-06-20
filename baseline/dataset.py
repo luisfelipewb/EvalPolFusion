@@ -28,29 +28,60 @@ class BottleSeg(Dataset):
         img = transformed["image"].astype("float32") / 255.0
         img = torch.from_numpy(img).permute(2, 0, 1)          # C,H,W
         msk = torch.from_numpy(transformed["mask"]).unsqueeze(0)  # 1,H,W
-        return img, msk
-    
+        return img, msk, name
+
 
 A_TRAIN = A.Compose([
     A.HorizontalFlip(p=0.5),
-    A.RandomResizedCrop((512, 512), scale=(0.8, 1.0)),
-    A.ColorJitter(p=0.4)
+    A.Resize(height=1024, width=1024) # deterministic resizing
 ], additional_targets={"mask":"mask"})
 
-A_VAL   = A.Compose([A.LongestMaxSize(512), A.PadIfNeeded(512,512)],
+A_VAL   = A.Compose([A.Resize(height=1024, width=1024)],
                     additional_targets={"mask":"mask"})
 
 
 def get_model(kind):
     if kind == "unet":
         return smp.Unet(
-                encoder_name="resnet34",
-                encoder_weights="imagenet",
-                classes=1,                      # binary
-                activation=None)
+            encoder_name="resnet34",
+            encoder_weights="imagenet",
+            classes=1,
+            activation=None,
+        )
+
     if kind == "deeplab":
         return smp.DeepLabV3Plus(
-                encoder_name="resnet34",
-                encoder_weights="imagenet",
-                classes=1,
-                activation=None)
+            encoder_name="resnet34",
+            encoder_weights="imagenet",
+            classes=1,
+            activation=None,
+        )
+
+    if kind == "unetpp":
+        return smp.UnetPlusPlus(
+            encoder_name="resnet34",
+            encoder_weights="imagenet",
+            classes=1,
+            activation=None,
+        )
+
+    if kind == "pspnet":
+        return smp.PSPNet(
+            encoder_name="resnet34",
+            encoder_weights="imagenet",
+            classes=1,
+            activation=None,
+        )
+
+    if kind == "segformer":
+        # lightweight transformer implementation via HuggingFace
+        from transformers import SegformerConfig, SegformerForSemanticSegmentation
+
+        cfg = SegformerConfig(
+            num_labels=1,                # binary mask → 1 logit channel
+            id2label={0: "foreground"},
+            label2id={"foreground": 0},
+        )
+        return SegformerForSemanticSegmentation(cfg)
+
+    raise ValueError(f"Unknown model kind: {kind}")
