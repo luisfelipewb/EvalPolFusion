@@ -1,0 +1,24 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "bottleseg"
+version = "0.1.0"
+description = "Bottle Semantic Segmentation using PyTorch"
+requires-python = ">=3.9"
+dependencies = [
+    "torch>=2.2",
+    "torchvision",
+    "segmentation-models-pytorch",
+    "albumentations",
+    "opencv-python",
+    "transformers",
+]
+
+[tool.setuptools.package-data]
+"bottleseg.configs" = ["*.yaml"]
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+packages = ["bottleseg"]

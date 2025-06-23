@@ -4,7 +4,7 @@ venv/
 *.pt
 __pycache__
 
-data/
+/data/
 
 baseline/preds/
 baseline/run/

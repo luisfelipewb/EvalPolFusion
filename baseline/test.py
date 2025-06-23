@@ -1,5 +1,9 @@
 import argparse, pathlib, torch, cv2
-from dataset import BottleSeg, A_VAL, get_model
+from bottleseg.models import get_model
+from bottleseg.data.bottle import BottleSeg, A_TRAIN, A_VAL
+from bottleseg.models import registry
+
+
 
 def predict(root, run_id, modality, model_type, device="cuda"):
     weights_path = pathlib.Path(f"../runs/{run_id}/{model_type}/{modality}/best.pt")
@@ -18,7 +22,10 @@ def predict(root, run_id, modality, model_type, device="cuda"):
     index = 0
     with torch.no_grad():
         for img, mask, name in test_ds:
-            pred = (model(img.unsqueeze(0).to(device)) > 0).squeeze().cpu().numpy().astype("uint8") * 255
+            out = model(img.unsqueeze(0).to(device))
+            if isinstance(out, dict):
+                out = out["logits"]
+            pred = (out > 0).squeeze().cpu().numpy().astype("uint8") * 255
             resized = cv2.resize(pred, (1224, 1024), interpolation=cv2.INTER_NEAREST)
             cv2.imwrite(str(outdir / f"{name}.png"), resized)
             if index % 100 == 0:
@@ -28,10 +35,10 @@ def predict(root, run_id, modality, model_type, device="cuda"):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--root", default="../data")
-    parser.add_argument("--run_id", required=True)
-    parser.add_argument("--model_type", required=True, choices=["pspnet", "unet", "deeplab"])
+    parser.add_argument("--run_name", required=True)
+    parser.add_argument("--model_type", choices=list(registry), required=True)
     parser.add_argument("--modality", required=True, choices=["rgb", "dif", "pol"])
     parser.add_argument("--device", default="cuda:0")
     args = parser.parse_args()
 
-    predict(args.root, args.run_id, args.modality, args.model_type, args.device)
+    predict(args.root, args.run_name, args.modality, args.model_type, args.device)
