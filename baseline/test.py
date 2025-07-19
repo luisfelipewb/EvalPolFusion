@@ -26,7 +26,7 @@ def predict(root, run_id, modality, model_type, device="cuda"):
             if isinstance(out, dict):
                 out = out["logits"]
             pred = (out > 0).squeeze().cpu().numpy().astype("uint8") * 255
-            resized = cv2.resize(pred, (1224, 1024), interpolation=cv2.INTER_NEAREST)
+            resized = cv2.resize(pred, (1224, 512), interpolation=cv2.INTER_NEAREST)
             cv2.imwrite(str(outdir / f"{name}.png"), resized)
             if index % 100 == 0:
                 print(f"Predicted {index} / {len(test_ds)} images...")

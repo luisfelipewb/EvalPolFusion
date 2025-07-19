@@ -80,9 +80,10 @@ def _segformer(classes: int = 1, variant: str = "b1", **kw) -> nn.Module:
     from transformers import SegformerForSemanticSegmentation
 
     return SegformerForSemanticSegmentation.from_pretrained(
-        f"nvidia/segformer-{variant}-finetuned-cityscapes-1024-1024",
+        f"nvidia/mit-{variant}",
         num_labels=classes,
         ignore_mismatched_sizes=True,
         **kw,
     )
+
 

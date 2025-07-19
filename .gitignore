@@ -2,6 +2,7 @@ potato/
 utils/output
 venv/
 *.pt
+*.pth
 __pycache__
 
 /data/
@@ -9,3 +10,5 @@ __pycache__
 baseline/preds/
 baseline/run/
 baseline/weights/
+fusion/checkpoints/
+.vscode/

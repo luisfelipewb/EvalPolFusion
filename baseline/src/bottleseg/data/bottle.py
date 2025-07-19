@@ -1,7 +1,6 @@
 from torch.utils.data import Dataset
 import cv2, numpy as np, torch, pathlib
 import albumentations as A
-from torchvision.io import read_image
 
 class BottleSeg(Dataset):
     def __init__(self, root, split, modality="rgb", aug=None):
@@ -37,11 +36,17 @@ class BottleSeg(Dataset):
         return img, msk, name
 
 
+offset = 384
+height = 512
+resize_dim = 512
+
 A_TRAIN = A.Compose([
     A.HorizontalFlip(p=0.5),
-    A.Resize(height=1024, width=1024) # deterministic resizing
-], additional_targets={"mask":"mask"})
+    A.Crop(x_min=0, y_min=offset, x_max=1224, y_max=offset+height),
+    A.Resize(height=resize_dim, width=resize_dim)
+], additional_targets={"mask": "mask"})
 
-A_VAL   = A.Compose([A.Resize(height=1024, width=1024)],
+A_VAL   = A.Compose([A.Crop(x_min=0, y_min=offset, x_max=1224, y_max=offset+height),
+                     A.Resize(height=resize_dim, width=resize_dim)],
                     additional_targets={"mask":"mask"})
 

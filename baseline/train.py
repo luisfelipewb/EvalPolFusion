@@ -32,7 +32,7 @@ def align_size(src: torch.Tensor, ref: torch.Tensor) -> torch.Tensor:
 def train(root, model_type, modality, epochs=15, bs=4, device="cuda:0", run_id="default"):
     train_ds = BottleSeg(root, "train", modality, A_TRAIN)
     val_ds   = BottleSeg(root, "val",   modality, A_VAL)
-    train_dl = DataLoader(train_ds, batch_size=bs, shuffle=True, num_workers=bs)
+    train_dl = DataLoader(train_ds, batch_size=bs, shuffle=True, num_workers=24)
     val_dl   = DataLoader(val_ds, batch_size=bs, shuffle=False)
 
     outdir = pathlib.Path(f"../runs/{run_id}/{model_type}/{modality}")
@@ -59,7 +59,7 @@ def train(root, model_type, modality, epochs=15, bs=4, device="cuda:0", run_id="
             loss.backward(); opt.step()
             train_loss += loss.item()
         avg_train_loss = train_loss / len(train_dl)
-        writer.add_scalar("Loss/train", avg_train_loss, ep)
+        writer.add_scalar("train/loss", avg_train_loss, ep)
 
         metric = BinaryJaccardIndex().to(device)
         model.eval()
@@ -78,8 +78,8 @@ def train(root, model_type, modality, epochs=15, bs=4, device="cuda:0", run_id="
                 metric.update(p, y_resized)
         miou = metric.compute().item()
         avg_val_loss = val_loss / len(val_dl)
-        writer.add_scalar("mIoU/val", miou, ep)
-        writer.add_scalar("Loss/val", avg_val_loss, ep)
+        writer.add_scalar("val/mIoU", miou*100, ep)
+        writer.add_scalar("val/loss", avg_val_loss, ep)
 
         if miou > best:
             best = miou
