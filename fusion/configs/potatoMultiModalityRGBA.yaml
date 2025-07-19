@@ -1,0 +1,54 @@
+DATASET:
+  IGNORE_LABEL: 255
+  MODALS:
+  - image
+  - aolp
+  NAME: POTATOMM
+  ROOT: <Path/To/Data/Folder>
+DEVICE: cuda
+EVAL:
+  BATCH_SIZE: 2
+  IMAGE_SIZE:
+  - 512
+  - 512
+  MODEL_PATH:  output/POTATOMM_CMNeXt-B3_ia/CMNeXt_CMNeXt-B3_POTATOMM_epoch48_93.09.pth
+  MSF:
+    ENABLE: false
+    FLIP: true
+    SCALES:
+    - 0.5
+    - 0.75
+    - 1.0
+    - 1.25
+    - 1.5
+    - 1.75
+LOSS:
+  CLS_WEIGHTS: false
+  NAME: OhemCrossEntropy
+MODEL:
+  BACKBONE: CMNeXt-B3
+  NAME: CMNeXt
+  PRETRAINED: checkpoints/pretrained/segformers/mit_b3.pth
+  RESUME: ''
+OPTIMIZER:
+  LR: 6.0e-05
+  NAME: adamw
+  WEIGHT_DECAY: 0.01
+SAVE_DIR: output
+SCHEDULER:
+  NAME: warmuppolylr
+  POWER: 0.9
+  WARMUP: 10
+  WARMUP_RATIO: 0.1
+TEST:
+  OVERLAY: false
+TRAIN:
+  AMP: true
+  BATCH_SIZE: 4
+  DDP: true
+  EPOCHS: 50
+  EVAL_INTERVAL: 1
+  EVAL_START: 0
+  IMAGE_SIZE:
+  - 512
+  - 512
