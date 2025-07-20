@@ -1,11 +1,12 @@
 potato/
+data/
+runs/
 utils/output
 venv/
 *.pt
 *.pth
 __pycache__
-
-/data/
+*.egg-info/
 
 baseline/preds/
 baseline/run/
