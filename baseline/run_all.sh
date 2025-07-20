@@ -5,11 +5,11 @@ trap 'echo "Interrupted! Killing all child processes..."; kill 0; exit 1' SIGINT
 gpu="cuda:0"
 
 # Hardcoded model types and modalities
-model_types=("unet" "deeplab" "segformer")
+model_types=("unet" "deeplab")
 modalities=("rgb" "dif" "pol")
 
-run_name="test"
-epochs=15
+run_name="b3e50"
+epochs=50
 
 for model in "${model_types[@]}"; do
   for modality in "${modalities[@]}"; do

@@ -2,7 +2,7 @@ import argparse, pathlib, torch, cv2
 from bottleseg.models import get_model
 from bottleseg.data.bottle import BottleSeg, A_TRAIN, A_VAL
 from bottleseg.models import registry
-
+import time
 
 
 def predict(root, run_id, modality, model_type, device="cuda"):
@@ -21,8 +21,12 @@ def predict(root, run_id, modality, model_type, device="cuda"):
     outdir.mkdir(parents=True, exist_ok=True)
     index = 0
     with torch.no_grad():
+        total_time = 0
         for img, mask, name in test_ds:
+            starting_time = time.time()
             out = model(img.unsqueeze(0).to(device))
+            process_time = time.time() - starting_time
+            total_time += process_time
             if isinstance(out, dict):
                 out = out["logits"]
             pred = (out > 0).squeeze().cpu().numpy().astype("uint8") * 255
@@ -31,6 +35,7 @@ def predict(root, run_id, modality, model_type, device="cuda"):
             if index % 100 == 0:
                 print(f"Predicted {index} / {len(test_ds)} images...")
             index += 1
+        print(f"Mean time {(total_time/index)*1000:.1f} ms per image")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
