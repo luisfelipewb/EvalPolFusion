@@ -1,7 +1,7 @@
 import os
 
 # Remplace ce chemin par le chemin de ton dossier
-folder_path = '/home/GPU/tbourbon/local_storage/potatoseg/potato/totest'
+folder_path = 'potato/totest'
 
 # Parcours des fichiers dans le dossier
 for filename in os.listdir(folder_path):

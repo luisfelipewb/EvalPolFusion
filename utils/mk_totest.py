@@ -2,13 +2,13 @@ import os
 import shutil
 
 # Chemin vers le fichier texte contenant la liste des noms d'images (sans extension)
-txt_file_path = '/home/GPU/tbourbon/local_storage/potatoseg/potato/list_folder/test.txt'
+txt_file_path = 'potato/list_folder/test.txt'
 
 # Chemin vers le répertoire source (dossier A) où se trouvent les fichiers images
-source_dir = '/home/GPU/tbourbon/local_storage/potatoseg/potato/polL_color'
+source_dir = 'potato/polL_color'
 
 # Chemin vers le répertoire de destination (dossier B) où tu veux déplacer les fichiers
-destination_dir = '/home/GPU/tbourbon/local_storage/potatoseg/potato/totest'
+destination_dir = 'potato/totest'
 
 # Assure-toi que le répertoire de destination existe
 os.makedirs(destination_dir, exist_ok=True)
